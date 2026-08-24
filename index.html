@@ -155,15 +155,6 @@ function tape(){
 
 /* ================= КАРТИНКИ ================= */
 const ART_API='https://pulse-art.onrender.com';
-
-const SCENES={
- oil:   'A sad oil barrel character with a drooping worried face, slumping downward, a red descending chart line behind it',
- gold:  'A proud joyful gold ingot character with a confident grin, rising upward, green ascending chart line behind it',
- index: 'A determined bull character in a business suit pushing against a heavy stone block, tense standoff',
- stock: 'A crowd of small coin characters with different emotions watching a big chart on a wall',
- crypto:'A wild-eyed bitcoin coin character riding a rocket, chaotic energy'
-};
-
 const ARTCACHE={};
 
 async function makeArt(post, idx){
@@ -177,7 +168,7 @@ async function makeArt(post, idx){
     const r=await fetch(ART_API,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({scene:SCENES[post.cat]||SCENES.index})
+      body:JSON.stringify({scene:post.scene})
     });
     const j=await r.json();
     if(j.error) throw new Error(j.error);
@@ -198,6 +189,7 @@ const CATS={oil:'Нефть и газ',index:'Индексы',gold:'Золото
 const POSTS=[
 {cat:'oil',time:'08:40',dir:'d',badge:'BRENT {BR%}',
  title:'Нефть развернулась: Brent теряет 2% и уходит под 91',
+ scene:'A plump anxious oil barrel character with huge worried eyes sliding helplessly down a steep red arrow, arms flailing, droplets of oil splashing off him. Behind him a narrow sea strait between two rocky desert coastlines: warships turning around and sailing away, a white dove flying over them carrying an olive branch, tiny relieved tanker ships lining up to pass through. Small panicking trader figures on a cliff dropping their papers, wall of charts pointing down, floating coin shapes and oil droplet symbols scattered through the air, a tiny turban-wearing diplomat and a tiny suited diplomat shaking hands in the far corner.',
  text:`🛢️ НЕФТЬ РАЗВЕРНУЛАСЬ: Brent теряет 2% и уходит под 91
 
 ⚡️ Утром Brent на МосБирже — {BR} за баррель, {BR%} за сессию. И это после того, как в четверг она впервые с 24 июля пробивала $94.
@@ -220,6 +212,7 @@ const POSTS=[
 
 {cat:'gold',time:'08:55',dir:'u',badge:'GOLD +3%',
  title:'Золото выше $4600 — но дело не в геополитике',
+ scene:'A gleaming golden ingot character with a smug confident grin and tiny arms, riding triumphantly up a green ascending arrow like a surfer. Below him a melting, sagging, exhausted green banknote character slumping down with tired eyes. In the background a grand neoclassical treasury building with columns, where tiny officials in suits shovel piles of bond certificates into a giant vacuum machine. Floating around: small glowing coin shapes, tiny bar charts, a deflating balloon, a set of scales tipping toward the gold side. Tiny investor figures climbing ladders toward the ingot with outstretched arms.',
  text:`🥇 ЗОЛОТО ВЫШЕ $4600 — И ПРИЧИНА НЕ ТА, О КОТОРОЙ ВСЕ ДУМАЮТ
 
 ⚡️ Золото впервые с конца мая ушло выше $4600 за унцию. За сессию — больше 3%, причём сотню долларов рынок прошёл за 45 минут.
@@ -240,6 +233,7 @@ $PLZL $UGLD — прямые бенефициары. Золотые резерв
 
 {cat:'index',time:'09:05',dir:'u',badge:'IMOEX {IMOEX%}',
  title:'IMOEX держит 2100, лидеры дня — Лента и Эн+',
+ scene:'A stocky determined bull character in a rumpled business suit straining to push a massive stone block up a shallow slope, hooves digging in, sweat flying, face full of stubborn effort. The block barely moves — a comic stalemate. Behind him a narrow canyon with high walls on both sides forming a tight corridor he cannot escape. Small cheerful character figures scramble up the bull back: a shopping basket, a spark of electricity, a gas flame, an oil droplet, each waving happily. On the other side a heavy sack labelled only by its shape as money weighs the slope down. Tiny onlookers with binoculars watch from the canyon rim, scattered charts and coin shapes in the dusty air.',
  text:`📈 ИНДЕКС МОСБИРЖИ: {IMOEX} ({IMOEX%})
 
 ⚡️ РТС — {RTS} ({RTS%}). Рынок продолжает болтаться в коридоре 2090–2190, из которого не может выйти уже вторую неделю.
