@@ -91,7 +91,7 @@
     grid-template-columns:repeat(3,1fr);
     gap:18px;align-items:start;
   }
-  .one{max-width:440px}
+  .row.single{grid-template-columns:1fr}
 
   .post{
     background:var(--card);
@@ -100,6 +100,23 @@
     padding:18px;
     display:flex;flex-direction:column;gap:14px;
   }
+  .row.single .post{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    grid-template-areas:
+      "art cat"
+      "art title"
+      "art body"
+      "art copy";
+    align-content:start;
+    column-gap:22px;
+  }
+  .row.single .cat{grid-area:cat}
+  .row.single .title{grid-area:title}
+  .row.single .body{grid-area:body}
+  .row.single .art{grid-area:art;align-self:start}
+  .row.single .copy{grid-area:copy;align-self:end;justify-self:start;padding-left:28px;padding-right:28px;width:auto}
+
   .cat{
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;letter-spacing:1.4px;text-transform:uppercase;
@@ -131,7 +148,10 @@
 
   @media (max-width:980px){
     .row{grid-template-columns:1fr}
-    .one{max-width:none}
+    .row.single .post{
+      display:flex;flex-direction:column;
+    }
+    .row.single .copy{width:100%;justify-self:stretch}
     select,input{width:100%;min-width:0}
   }
   @media (prefers-reduced-motion:reduce){
@@ -244,7 +264,7 @@
       <div class="status" id="sAsset"></div>
     </div>
     <div class="err" id="eAsset"></div>
-    <div class="row one" id="rowAsset"></div>
+    <div class="row single" id="rowAsset"></div>
   </section>
 
 </div>
@@ -281,13 +301,28 @@ function makeCard(post){
 
   const btn = el('button','copy','Скопировать');
   btn.onclick = async () => {
+    const text = post.text || '';
     try{
-      await navigator.clipboard.writeText(post.text || '');
+      await navigator.clipboard.writeText(text);
       btn.textContent = 'Скопировано';
       btn.classList.add('done');
       setTimeout(()=>{ btn.textContent='Скопировать'; btn.classList.remove('done'); }, 1600);
     }catch(e){
-      btn.textContent = 'Не вышло — выдели вручную';
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position='fixed';
+      ta.style.opacity='0';
+      document.body.appendChild(ta);
+      ta.select();
+      try{
+        document.execCommand('copy');
+        btn.textContent = 'Скопировано';
+        btn.classList.add('done');
+        setTimeout(()=>{ btn.textContent='Скопировать'; btn.classList.remove('done'); }, 1600);
+      }catch(e2){
+        btn.textContent = 'Не вышло — выдели текст вручную';
+      }
+      document.body.removeChild(ta);
     }
   };
   box.appendChild(btn);
