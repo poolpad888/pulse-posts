@@ -2,8 +2,7 @@ import http from 'node:http';
 
 const KEY = process.env.OPENAI_API_KEY;
 
-const STYLE = `A photorealistic 3D animated movie still, rendered like a frame from a modern Pixar feature film. Fully three-dimensional characters with soft rounded appealing shapes, detailed skin and surface textures, expressive oversized eyes and strong readable emotion. Cinematic lighting with global illumination, soft shadows, warm rim light and shallow depth of field. Rich detailed environment with real materials — metal, water, stone, fabric. Vibrant saturated color grading. Dense background full of small props and tiny secondary characters. Absolutely no text, no letters, no numbers, no words, no logos anywhere in the image.`;
-const server = http.createServer(async (req, res) => {
+const STYLE = ` Rendered as a serious editorial illustration for a financial newspaper: painterly digital realism with the restraint of a broadsheet op-ed page. Muted, sober palette of deep slate blue, graphite, warm ochre and cold steel. Dramatic directional light, deep shadows, visible brush and ink texture, no gloss, no plastic surfaces. Human figures are anatomically believable adults with weight and gravity in their posture, never cartoonish, never big-eyed, never rounded and toy-like. Composition is dense and cinematic with meaningful background detail. Absolutely no cartoon or animated-film aesthetic, no 3D render look, no text, letters, numbers or logos anywhere in the frame.`;const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
