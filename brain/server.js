@@ -53,10 +53,11 @@ async function news(topic, extra){
 /* ---------- КОТИРОВКИ ---------- */
 const ISS='https://iss.moex.com/iss/engines/';
 const PATHS = t => [
-  `stock/markets/shares/securities/${t}.json`,
-  `stock/markets/index/securities/${t}.json`,
-  `futures/markets/forts/securities/${t}.json`,
-  `currency/markets/selt/securities/${t}.json`
+`stock/markets/shares/boards/TQBR/securities/${t}.json`,
+`stock/markets/index/boards/SNDX/securities/${t}.json`,
+`futures/markets/forts/boards/RFUD/securities/${t}.json`,
+`currency/markets/selt/boards/CETS/securities/${t}.json`,
+`stock/markets/shares/securities/${t}.json`
 ];
 
 function pick(b,names){
