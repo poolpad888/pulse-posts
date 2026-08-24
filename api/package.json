@@ -1,0 +1,7 @@
+{
+  "name": "pulse-art",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node server.js" }
+}
