@@ -88,7 +88,7 @@
 
   .row{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(4,1fr);
     gap:18px;align-items:start;
   }
   .row.single{grid-template-columns:1fr}
@@ -146,6 +146,10 @@
   .copy:hover:not(:disabled){background:var(--amber);color:#0E1620}
   .copy.done{background:var(--up);border-color:var(--up);color:#0E1620}
 
+@media (max-width:1240px){
+    .row{grid-template-columns:repeat(2,1fr)}
+  }
+  
   @media (max-width:980px){
     .row{grid-template-columns:1fr}
     .row.single .post{
