@@ -2,7 +2,7 @@ import http from 'node:http';
 
 const KEY = process.env.OPENAI_API_KEY;
 
-const STYLE = `Editorial newspaper caricature, hand-drawn ink illustration with cross-hatching and fine linework, muted vintage palette with one accent color. Richly detailed busy scene: a clear main character in the center with strong exaggerated facial expression, surrounded by many small background details — tiny frantic figures, flying papers, wall charts, arrows, scattered objects, signage shapes. Deep background with visible environment, not empty space. Dense, layered composition that rewards close looking, like a classic Punch or Economist political cartoon. Absolutely no text, no letters, no numbers, no words anywhere in the image.`;
+const STYLE = `Rendered as a hybrid of a classic Economist political caricature and a Pixar animated film still. Characters are appealing, rounded, three-dimensional, with soft volumetric lighting, subtle subsurface glow and cinematic depth of field, like a high-end 3D animation frame — but the composition, wit and symbolic storytelling are pure editorial cartoon. Expressive exaggerated faces with real emotion and personality. Warm cinematic color grading, one dominant accent color. Dense layered background full of small meaningful props and tiny secondary characters that reward close inspection. Every element is symbolic and connected to finance and markets. Absolutely no text, no letters, no numbers, no words, no logos anywhere in the image.`;
 
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
