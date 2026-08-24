@@ -2,8 +2,7 @@ import http from 'node:http';
 
 const KEY = process.env.OPENAI_API_KEY;
 
-const STYLE = `Rendered as a hybrid of a classic Economist political caricature and a Pixar animated film still. Characters are appealing, rounded, three-dimensional, with soft volumetric lighting, subtle subsurface glow and cinematic depth of field, like a high-end 3D animation frame — but the composition, wit and symbolic storytelling are pure editorial cartoon. Expressive exaggerated faces with real emotion and personality. Warm cinematic color grading, one dominant accent color. Dense layered background full of small meaningful props and tiny secondary characters that reward close inspection. Every element is symbolic and connected to finance and markets. Absolutely no text, no letters, no numbers, no words, no logos anywhere in the image.`;
-
+const STYLE = `A photorealistic 3D animated movie still, rendered like a frame from a modern Pixar feature film. Fully three-dimensional characters with soft rounded appealing shapes, detailed skin and surface textures, expressive oversized eyes and strong readable emotion. Cinematic lighting with global illumination, soft shadows, warm rim light and shallow depth of field. Rich detailed environment with real materials — metal, water, stone, fabric. Vibrant saturated color grading. Dense background full of small props and tiny secondary characters. Absolutely no text, no letters, no numbers, no words, no logos anywhere in the image.`;
 const server = http.createServer(async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
