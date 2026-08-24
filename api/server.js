@@ -2,60 +2,47 @@ import http from 'node:http';
 
 const KEY = process.env.OPENAI_API_KEY;
 
-// ЕДИНЫЙ СТИЛЬ. Меняем только эту строку, чтобы поменять вид всех картинок.
-const STYLE = `Editorial newspaper caricature, hand-drawn ink illustration with
-bold confident linework and cross-hatching, expressive exaggerated cartoon face
-on the main object, single character centered, dark navy background (#0E1620),
-amber (#F5A524) and off-white accents, dramatic rim lighting, vintage financial
-press engraving feel, no text, no letters, no words, no numbers, square composition.`;
-
-function send(res, code, obj) {
-  res.writeHead(code, {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
-  });
-  res.end(JSON.stringify(obj));
-}
+const STYLE = `Editorial newspaper caricature, hand-drawn ink illustration with cross-hatching and fine linework, muted vintage palette with one accent color. Richly detailed busy scene: a clear main character in the center with strong exaggerated facial expression, surrounded by many small background details — tiny frantic figures, flying papers, wall charts, arrows, scattered objects, signage shapes. Deep background with visible environment, not empty space. Dense, layered composition that rewards close looking, like a classic Punch or Economist political cartoon. Absolutely no text, no letters, no numbers, no words anywhere in the image.`;
 
 const server = http.createServer(async (req, res) => {
-  if (req.method === 'OPTIONS') return send(res, 204, {});
-  if (req.method !== 'POST') return send(res, 200, { ok: true });
-  if (!KEY) return send(res, 500, { error: 'Не задан OPENAI_API_KEY' });
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+
+  if (req.method === 'OPTIONS') { res.writeHead(204).end(); return; }
+  if (req.method !== 'POST') { res.writeHead(200).end('pulse-art alive'); return; }
 
   let body = '';
-  req.on('data', c => { body += c; if (body.length > 1e5) req.destroy(); });
+  req.on('data', c => body += c);
   req.on('end', async () => {
     try {
       const { scene } = JSON.parse(body || '{}');
-      if (!scene) return send(res, 400, { error: 'Нет описания сцены' });
+      if (!scene) throw new Error('no scene');
 
       const r = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer ' + KEY,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + KEY
         },
         body: JSON.stringify({
           model: 'gpt-image-1',
-          prompt: scene + '\n\n' + STYLE,
+          prompt: scene + ' ' + STYLE,
           size: '1024x1024',
-          quality: 'medium',
-          n: 1
+          quality: 'medium'
         })
       });
 
       const j = await r.json();
-      if (!r.ok) return send(res, r.status, { error: j.error?.message || 'Ошибка OpenAI' });
+      if (j.error) throw new Error(j.error.message);
 
-      const b64 = j.data?.[0]?.b64_json;
-      if (!b64) return send(res, 500, { error: 'Пустой ответ' });
-      send(res, 200, { b64 });
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ b64: j.data[0].b64_json }));
     } catch (e) {
-      send(res, 500, { error: String(e.message || e) });
+      res.writeHead(500, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ error: e.message }));
     }
   });
 });
 
-server.listen(process.env.PORT || 3000);
+server.listen(process.env.PORT || 10000);
