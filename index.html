@@ -2,317 +2,386 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Посты для Пульса</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0E1620; --card:#16202C; --line:#243244;
-  --paper:#EAF0F7; --mute:#8395AB;
-  --amber:#F5A524; --up:#3DD68C; --down:#F0616D;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--paper);
-  font:400 15px/1.6 'IBM Plex Sans',system-ui,sans-serif}
+  :root{
+    --bg:#0E1620;
+    --card:#16202C;
+    --line:#22303F;
+    --amber:#F5A524;
+    --up:#3DD68C;
+    --down:#F0616D;
+    --text:#E6EDF3;
+    --dim:#7D8FA3;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    padding:28px 20px 80px;
+  }
+  .wrap{max-width:1320px;margin:0 auto}
 
-.tape{overflow:hidden;border-bottom:1px solid var(--line);
-  background:#0A111A;padding:9px 0;white-space:nowrap}
-.tape-track{display:inline-block;animation:run 40s linear infinite}
-.tape:hover .tape-track{animation-play-state:paused}
-@keyframes run{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tape-item{display:inline-block;padding:0 22px;color:var(--mute);
-  font:400 13px/1 'IBM Plex Mono',monospace}
-.tape-item b{color:var(--paper);font-weight:600}
-.tape-item .u{color:var(--up)} .tape-item .d{color:var(--down)}
-.src{font:400 11px/1 'IBM Plex Mono',monospace;color:var(--mute);
-  opacity:.6;text-align:right;padding:7px 18px 0}
+  header{
+    display:flex;align-items:baseline;gap:16px;
+    flex-wrap:wrap;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--line);
+  }
+  h1{
+    font-size:26px;font-weight:700;margin:0;
+    letter-spacing:-.4px;
+  }
+  h1 span{color:var(--amber)}
+  .src{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;color:var(--dim);
+  }
 
-.wrap{max-width:720px;margin:0 auto;padding:22px 18px 60px}
-.head{border-bottom:2px solid var(--amber);padding-bottom:14px;margin-bottom:26px}
-.logo{font:700 26px/1.1 'IBM Plex Mono',monospace;letter-spacing:-.5px}
-.logo span{color:var(--amber)}
-.date{color:var(--mute);font:400 13px 'IBM Plex Mono',monospace;margin-top:6px}
+  section{margin-top:34px}
+  .bar{
+    display:flex;align-items:center;gap:14px;
+    flex-wrap:wrap;margin-bottom:20px;
+  }
+  h2{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;font-weight:500;
+    text-transform:uppercase;letter-spacing:1.4px;
+    color:var(--dim);margin:0 0 14px;
+  }
 
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
-.chip{border:1px solid var(--line);background:transparent;color:var(--mute);
-  border-radius:20px;padding:6px 14px;cursor:pointer;
-  font:600 12px 'IBM Plex Mono',monospace}
-.chip.on{border-color:var(--amber);color:var(--amber)}
+  button{
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:15px;font-weight:600;
+    background:var(--amber);color:#0E1620;
+    border:0;border-radius:8px;
+    padding:12px 22px;cursor:pointer;
+    transition:filter .15s;
+  }
+  button:hover:not(:disabled){filter:brightness(1.1)}
+  button:disabled{opacity:.45;cursor:default}
+  button:focus-visible{outline:2px solid var(--text);outline-offset:2px}
 
-.post{background:var(--card);border:1px solid var(--line);
-  border-radius:14px;padding:20px;margin-bottom:18px}
-.meta{display:flex;gap:10px;align-items:center;margin-bottom:12px;
-  font:600 11px 'IBM Plex Mono',monospace;color:var(--mute)}
-.badge{padding:3px 9px;border-radius:6px;font-weight:700}
-.badge.u{background:rgba(61,214,140,.14);color:var(--up)}
-.badge.d{background:rgba(240,97,109,.14);color:var(--down)}
-.post h2{margin:0 0 12px;font:600 20px/1.3 'IBM Plex Sans'}
-.art{margin:0 0 14px}
-.art img{width:100%;border-radius:10px;display:block}
-.text{white-space:pre-wrap;color:#C9D6E5}
-.text .t{color:var(--amber);font-family:'IBM Plex Mono',monospace;font-weight:600}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.btn{background:var(--amber);color:#0E1620;border:0;
-  border-radius:9px;padding:11px 20px;cursor:pointer;
-  font:700 13px 'IBM Plex Mono',monospace}
-.btn.ghost{background:transparent;color:var(--amber);
-  border:1px solid var(--amber)}
-.btn:disabled{opacity:.5;cursor:default}
-.btn:active{transform:translateY(1px)}
-.err{color:var(--down);font:400 12px 'IBM Plex Mono',monospace;
-  margin-top:8px;white-space:pre-wrap}
-.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
-  background:var(--up);color:#06131C;padding:11px 22px;border-radius:9px;
-  font:700 13px 'IBM Plex Mono',monospace;opacity:0;
-  transition:opacity .25s;pointer-events:none}
-.toast.on{opacity:1}
+  select,input{
+    font-family:'IBM Plex Mono',monospace;font-size:14px;
+    background:var(--card);color:var(--text);
+    border:1px solid var(--line);border-radius:8px;
+    padding:11px 13px;
+  }
+  select{min-width:280px}
+  input{width:150px;text-transform:uppercase}
+  select:focus,input:focus{outline:none;border-color:var(--amber)}
+
+  .status{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--dim)}
+  .err{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;
+    color:var(--down);border:1px solid var(--down);
+    border-radius:8px;padding:10px 14px;margin-top:14px;
+    white-space:pre-wrap;display:none;
+  }
+
+  .row{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;align-items:start;
+  }
+  .one{max-width:440px}
+
+  .post{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .cat{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:1.4px;text-transform:uppercase;
+    color:var(--amber);
+  }
+  .title{font-size:17px;font-weight:600;line-height:1.35;margin:0}
+  .body{
+    font-size:14.5px;line-height:1.62;
+    white-space:pre-wrap;margin:0;
+  }
+  .art{
+    width:100%;aspect-ratio:1/1;
+    border-radius:10px;overflow:hidden;
+    background:#0B1119;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .art img{width:100%;height:100%;object-fit:cover;display:block}
+  .art .ph{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;color:var(--dim);text-align:center;padding:14px;
+  }
+  .copy{
+    background:transparent;color:var(--amber);
+    border:1px solid var(--amber);
+    font-size:14px;padding:10px 0;width:100%;
+  }
+  .copy:hover:not(:disabled){background:var(--amber);color:#0E1620}
+  .copy.done{background:var(--up);border-color:var(--up);color:#0E1620}
+
+  @media (max-width:980px){
+    .row{grid-template-columns:1fr}
+    .one{max-width:none}
+    select,input{width:100%;min-width:0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important}
+  }
 </style>
 </head>
 <body>
-
-<div class="tape"><div class="tape-track" id="tape"></div></div>
-<div class="src" id="src">загружаю котировки…</div>
-
 <div class="wrap">
-  <div class="head">
-    <div class="logo">ПОСТЫ ДЛЯ <span>ПУЛЬСА</span></div>
-    <div class="date" id="date"></div>
-  </div>
-  <div class="chips" id="chips"></div>
-  <div id="feed"></div>
+
+  <header>
+    <h1>Посты для <span>Пульса</span></h1>
+    <div class="src">Мосбиржа, задержка 15 мин</div>
+  </header>
+
+  <section>
+    <h2>Утренний выпуск</h2>
+    <div class="bar">
+      <button id="bMorning">Сгенерировать утренние новости</button>
+      <div class="status" id="sMorning"></div>
+    </div>
+    <div class="err" id="eMorning"></div>
+    <div class="row" id="rowMorning"></div>
+  </section>
+
+  <section>
+    <h2>Отдельный актив</h2>
+    <div class="bar">
+      <select id="pick">
+        <optgroup label="Сырьё и металлы">
+          <option value="BRU6">Нефть Brent — BRU6</option>
+          <option value="NGU6">Природный газ — NGU6</option>
+          <option value="GDU6">Золото — GDU6</option>
+          <option value="SVU6">Серебро — SVU6</option>
+        </optgroup>
+        <optgroup label="Индексы и валюта">
+          <option value="IMOEX">Индекс МосБиржи — IMOEX</option>
+          <option value="RTSI">Индекс РТС — RTSI</option>
+          <option value="USD000UTSTOM">Доллар — USD/RUB</option>
+          <option value="CNYRUB_TOM">Юань — CNY/RUB</option>
+        </optgroup>
+        <optgroup label="Нефть и газ">
+          <option value="GAZP">Газпром — GAZP</option>
+          <option value="LKOH">Лукойл — LKOH</option>
+          <option value="ROSN">Роснефть — ROSN</option>
+          <option value="TATN">Татнефть — TATN</option>
+          <option value="TATNP">Татнефть преф — TATNP</option>
+          <option value="SNGS">Сургутнефтегаз — SNGS</option>
+          <option value="SNGSP">Сургутнефтегаз преф — SNGSP</option>
+          <option value="NVTK">НОВАТЭК — NVTK</option>
+          <option value="SIBN">Газпром нефть — SIBN</option>
+          <option value="TRNFP">Транснефть преф — TRNFP</option>
+        </optgroup>
+        <optgroup label="Металлурги и добыча">
+          <option value="GMKN">Норникель — GMKN</option>
+          <option value="PLZL">Полюс — PLZL</option>
+          <option value="UGLD">ЮГК — UGLD</option>
+          <option value="SELG">Селигдар — SELG</option>
+          <option value="CHMF">Северсталь — CHMF</option>
+          <option value="NLMK">НЛМК — NLMK</option>
+          <option value="MAGN">ММК — MAGN</option>
+          <option value="ALRS">АЛРОСА — ALRS</option>
+          <option value="RUAL">РУСАЛ — RUAL</option>
+          <option value="ENPG">Эн+ — ENPG</option>
+          <option value="PHOR">ФосАгро — PHOR</option>
+          <option value="RASP">Распадская — RASP</option>
+        </optgroup>
+        <optgroup label="Банки и финансы">
+          <option value="SBER">Сбербанк — SBER</option>
+          <option value="VTBR">ВТБ — VTBR</option>
+          <option value="T">Т-Технологии — T</option>
+          <option value="SVCB">Совкомбанк — SVCB</option>
+          <option value="BSPB">Банк СПб — BSPB</option>
+          <option value="CBOM">МКБ — CBOM</option>
+          <option value="MOEX">Мосбиржа — MOEX</option>
+          <option value="RENI">Ренессанс — RENI</option>
+          <option value="AFKS">АФК Система — AFKS</option>
+        </optgroup>
+        <optgroup label="Технологии и потребление">
+          <option value="YDEX">Яндекс — YDEX</option>
+          <option value="OZON">Ozon — OZON</option>
+          <option value="VKCO">VK — VKCO</option>
+          <option value="POSI">Позитив — POSI</option>
+          <option value="ASTR">Астра — ASTR</option>
+          <option value="SOFL">Софтлайн — SOFL</option>
+          <option value="WUSH">Вуш — WUSH</option>
+          <option value="MGNT">Магнит — MGNT</option>
+          <option value="LENT">Лента — LENT</option>
+          <option value="X5">X5 — X5</option>
+          <option value="MTSS">МТС — MTSS</option>
+          <option value="RTKM">Ростелеком — RTKM</option>
+          <option value="MDMG">Мать и дитя — MDMG</option>
+        </optgroup>
+        <optgroup label="Энергетика, транспорт, стройка">
+          <option value="IRAO">Интер РАО — IRAO</option>
+          <option value="HYDR">РусГидро — HYDR</option>
+          <option value="FEES">Россети — FEES</option>
+          <option value="UPRO">Юнипро — UPRO</option>
+          <option value="AFLT">Аэрофлот — AFLT</option>
+          <option value="FLOT">Совкомфлот — FLOT</option>
+          <option value="NMTP">НМТП — NMTP</option>
+          <option value="PIKK">ПИК — PIKK</option>
+          <option value="SMLT">Самолёт — SMLT</option>
+          <option value="LSRG">ЛСР — LSRG</option>
+          <option value="SGZH">Сегежа — SGZH</option>
+        </optgroup>
+      </select>
+      <input id="manual" placeholder="или тикер" maxlength="14">
+      <button id="bAsset">Сгенерировать пост</button>
+      <div class="status" id="sAsset"></div>
+    </div>
+    <div class="err" id="eAsset"></div>
+    <div class="row one" id="rowAsset"></div>
+  </section>
+
 </div>
 
-<div class="toast" id="toast">Скопировано</div>
-
 <script>
-/* ================= КОТИРОВКИ ================= */
-const ISS='https://iss.moex.com/iss/engines/';
-const FEEDS=[
- {k:'BR',   n:'$BRU6',   u:'futures/markets/forts/securities/BRU6.json'},
- {k:'IMOEX',n:'IMOEX',   u:'stock/markets/index/securities/IMOEX.json'},
- {k:'RTS',  n:'RTS',     u:'stock/markets/index/securities/RTSI.json'},
- {k:'USD',  n:'USD/RUB', u:'currency/markets/selt/securities/USD000UTSTOM.json'},
- {k:'TATN', n:'$TATN',   u:'stock/markets/shares/securities/TATN.json'},
- {k:'PLZL', n:'$PLZL',   u:'stock/markets/shares/securities/PLZL.json'},
- {k:'GMKN', n:'$GMKN',   u:'stock/markets/shares/securities/GMKN.json'},
- {k:'LKOH', n:'$LKOH',   u:'stock/markets/shares/securities/LKOH.json'}
-];
+const BRAIN = 'https://pulse-brain.onrender.com';
+const ART   = 'https://pulse-art.onrender.com';
 
-const FB={BR:{v:90.28,c:-2.0},IMOEX:{v:2134.97,c:0.63},RTS:{v:811.09,c:1.16},
- USD:{v:83.36,c:-1.77},TATN:{v:null,c:1.8},PLZL:{v:null,c:3.2},
- GMKN:{v:null,c:null},LKOH:{v:null,c:null}};
+const CATS = {
+  oil:'Нефть и газ',
+  gold:'Золото и серебро',
+  index:'Индексы и акции',
+  stock:'Актив'
+};
 
-const Q={};
-const nf=x=>x==null?'—':x.toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2});
-const pf=c=>c==null?'—':(c>0?'+':'−')+Math.abs(c).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
-
-function pick(b,names){
-  if(!b||!b.data||!b.data.length)return null;
-  for(const n of names){const i=b.columns.indexOf(n);
-    if(i>-1&&b.data[0][i]!=null)return b.data[0][i];}
-  return null;
+function el(tag, cls, txt){
+  const n = document.createElement(tag);
+  if(cls) n.className = cls;
+  if(txt != null) n.textContent = txt;
+  return n;
 }
 
-async function one(f){
-  const r=await fetch(ISS+f.u+'?iss.meta=off&iss.only=marketdata,securities',{cache:'no-store'});
-  if(!r.ok)throw 0;
-  const j=await r.json();
-  const v=pick(j.marketdata,['LAST','CURRENTVALUE','LASTVALUE','LCURRENTPRICE','MARKETPRICE'])
-       ?? pick(j.securities,['PREVPRICE','PREVSETTLEPRICE','PREVLEGALCLOSEPRICE']);
-  const c=pick(j.marketdata,['LASTCHANGEPRCNT','LASTTOPREVPRICE','CHANGE']);
-  return {v:v==null?null:+v, c:c==null?null:+c};
-}
+function makeCard(post){
+  const box = el('div','post');
 
-async function load(){
-  await Promise.all(FEEDS.map(async f=>{
+  box.appendChild(el('div','cat', CATS[post.cat] || 'Пост'));
+  box.appendChild(el('h3','title', post.title || ''));
+
+  const art = el('div','art');
+  art.appendChild(el('div','ph','Рисую картинку…'));
+  box.appendChild(art);
+
+  box.appendChild(el('p','body', post.text || ''));
+
+  const btn = el('button','copy','Скопировать');
+  btn.onclick = async () => {
     try{
-      const q=await one(f);
-      Q[f.k]=(q.v==null)?{...FB[f.k],stale:true}:q;
-    }catch(e){ Q[f.k]={...FB[f.k],stale:true}; }
-  }));
+      await navigator.clipboard.writeText(post.text || '');
+      btn.textContent = 'Скопировано';
+      btn.classList.add('done');
+      setTimeout(()=>{ btn.textContent='Скопировать'; btn.classList.remove('done'); }, 1600);
+    }catch(e){
+      btn.textContent = 'Не вышло — выдели вручную';
+    }
+  };
+  box.appendChild(btn);
+
+  return { box, art };
 }
 
-function fill(t){
-  return String(t).replace(/\{([A-Z]+)(%?)\}/g,(m,k,p)=>{
-    const q=Q[k]||FB[k]; if(!q)return m;
-    return p?pf(q.c):nf(q.v);
-  });
-}
-
-function tape(){
-  const row=FEEDS.map(f=>{
-    const q=Q[f.k]||FB[f.k]||{};
-    const d=q.c==null?'':(q.c>=0?'u':'d');
-    return `<span class="tape-item">${f.n} <b>${nf(q.v)}</b> <span class="${d}">${pf(q.c)}</span></span>`;
-  }).join('');
-  document.getElementById('tape').innerHTML=row+row;
-  const st=Object.values(Q).some(x=>x&&x.stale);
-  const n=new Date();
-  document.getElementById('src').textContent=
-    (st?'последние известные · ':'Мосбиржа, задержка 15 мин · ')+
-    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-}
-
-/* ================= КАРТИНКИ ================= */
-const ART_API='https://pulse-art.onrender.com';
-const ARTCACHE={};
-
-async function makeArt(post, idx){
-  const box=document.getElementById('art'+idx);
-  const btn=document.getElementById('ab'+idx);
-  const err=document.getElementById('er'+idx);
-  err.textContent='';
-  btn.disabled=true;
-  btn.textContent='Рисую… (до минуты)';
+async function drawArt(art, scene){
+  if(!scene){ art.innerHTML=''; art.appendChild(el('div','ph','Сцена не пришла')); return; }
   try{
-    const r=await fetch(ART_API,{
+    const r = await fetch(ART, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({scene:post.scene})
+      body: JSON.stringify({ scene })
     });
-    const j=await r.json();
+    const j = await r.json();
     if(j.error) throw new Error(j.error);
-    if(!j.b64) throw new Error('Пустой ответ сервиса');
-    ARTCACHE[idx]=j.b64;
-    box.innerHTML='<img src="data:image/png;base64,'+j.b64+'" alt="">';
-    btn.textContent='Перерисовать';
+    if(!j.b64) throw new Error('пустой ответ');
+    const img = new Image();
+    img.alt = '';
+    img.src = 'data:image/png;base64,' + j.b64;
+    art.innerHTML = '';
+    art.appendChild(img);
   }catch(e){
-    err.textContent='Ошибка: '+(e.message||e);
-    btn.textContent='Сгенерировать картинку';
+    art.innerHTML = '';
+    art.appendChild(el('div','ph','Картинка не пришла: ' + e.message));
   }
-  btn.disabled=false;
 }
 
-/* ================= ПОСТЫ ================= */
-const CATS={oil:'Нефть и газ',index:'Индексы',gold:'Золото',stock:'Акции РФ',crypto:'Крипта'};
+async function run(opts){
+  const { btn, status, errBox, row, payload, wait } = opts;
 
-const POSTS=[
-{cat:'oil',time:'08:40',dir:'d',badge:'BRENT {BR%}',
- title:'Нефть развернулась: Brent теряет 2% и уходит под 91',
- scene:'A plump anxious oil barrel character with huge worried eyes sliding helplessly down a steep red arrow, arms flailing, droplets of oil splashing off him. Behind him a narrow sea strait between two rocky desert coastlines: warships turning around and sailing away, a white dove flying over them carrying an olive branch, tiny relieved tanker ships lining up to pass through. Small panicking trader figures on a cliff dropping their papers, wall of charts pointing down, floating coin shapes and oil droplet symbols scattered through the air, a tiny turban-wearing diplomat and a tiny suited diplomat shaking hands in the far corner.',
- text:`🛢️ НЕФТЬ РАЗВЕРНУЛАСЬ: Brent теряет 2% и уходит под 91
+  btn.disabled = true;
+  errBox.style.display = 'none';
+  errBox.textContent = '';
+  row.innerHTML = '';
+  status.textContent = wait;
 
-⚡️ Утром Brent на МосБирже — {BR} за баррель, {BR%} за сессию. И это после того, как в четверг она впервые с 24 июля пробивала $94.
+  try{
+    const r = await fetch(BRAIN, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const j = await r.json();
+    if(j.error) throw new Error(j.error);
+    if(!j.posts || !j.posts.length) throw new Error('мозг вернул пусто');
 
-📉 Почему падаем?
+    status.textContent = 'Готово. Картинки дорисовываются.';
 
-Причина одна, и она не про спрос. Рынок закладывает мир. Катар и США заявили о возможном скором соглашении с Ираном по открытию Ормузского пролива. Трамп приостановил военную операцию по сопровождению судов. Уходит риск блокады — уходит и риск-премия, а она была главным драйвером этой нефти.
+    const arts = [];
+    j.posts.forEach(p => {
+      const c = makeCard(p);
+      row.appendChild(c.box);
+      arts.push([c.art, p.scene]);
+    });
 
-🌍 Что держит цену снизу?
+    await Promise.all(arts.map(([a,s]) => drawArt(a,s)));
+    status.textContent = 'Готово.';
 
-Через Ормуз идёт около 20 млн баррелей в сутки. Альтернативные трубопроводы дают максимум 9. Пролив незаменим, и срыв переговоров вернёт нефть к $95 за одну сессию.
-
-🇷🇺 Что это значит для наших?
-
-Слабая нефть плюс крепкий рубль — двойной удар по экспортёрам: $ROSN $LKOH $TATN $SNGS $SIBN
-
-📊 Ближайший фьючерс — $BRU6, экспирация 31 августа. Коридор аналитиков: $91–95.
-
-💭 Удержим 90 или пойдём проверять 88? Пишите 👇`},
-
-{cat:'gold',time:'08:55',dir:'u',badge:'GOLD +3%',
- title:'Золото выше $4600 — но дело не в геополитике',
- scene:'A gleaming golden ingot character with a smug confident grin and tiny arms, riding triumphantly up a green ascending arrow like a surfer. Below him a melting, sagging, exhausted green banknote character slumping down with tired eyes. In the background a grand neoclassical treasury building with columns, where tiny officials in suits shovel piles of bond certificates into a giant vacuum machine. Floating around: small glowing coin shapes, tiny bar charts, a deflating balloon, a set of scales tipping toward the gold side. Tiny investor figures climbing ladders toward the ingot with outstretched arms.',
- text:`🥇 ЗОЛОТО ВЫШЕ $4600 — И ПРИЧИНА НЕ ТА, О КОТОРОЙ ВСЕ ДУМАЮТ
-
-⚡️ Золото впервые с конца мая ушло выше $4600 за унцию. За сессию — больше 3%, причём сотню долларов рынок прошёл за 45 минут.
-
-🏛️ Почему растём?
-
-Не из-за Ближнего Востока. Драйвер — программа выкупа долгосрочных гособлигаций Минфином США. Скотт Бессент выкупает трежерис, чтобы сдержать рост доходностей. Доходности упали, доллар ослаб — и деньги пошли в золото. Bloomberg называет это debasement concerns: рынок сомневается в долларе как в хранилище стоимости.
-
-📊 Техника
-
-Пробита 100-дневная скользящая в районе $4381 — уровень, который держал весь июль.
-
-🇷🇺 Кто выигрывает у нас
-
-$PLZL $UGLD — прямые бенефициары. Золотые резервы ЦБ РФ, к слову, на минимуме с начала 2020 года.
-
-💭 Берёте золото на этих уровнях или ждёте откат? 👇`},
-
-{cat:'index',time:'09:05',dir:'u',badge:'IMOEX {IMOEX%}',
- title:'IMOEX держит 2100, лидеры дня — Лента и Эн+',
- scene:'A stocky determined bull character in a rumpled business suit straining to push a massive stone block up a shallow slope, hooves digging in, sweat flying, face full of stubborn effort. The block barely moves — a comic stalemate. Behind him a narrow canyon with high walls on both sides forming a tight corridor he cannot escape. Small cheerful character figures scramble up the bull back: a shopping basket, a spark of electricity, a gas flame, an oil droplet, each waving happily. On the other side a heavy sack labelled only by its shape as money weighs the slope down. Tiny onlookers with binoculars watch from the canyon rim, scattered charts and coin shapes in the dusty air.',
- text:`📈 ИНДЕКС МОСБИРЖИ: {IMOEX} ({IMOEX%})
-
-⚡️ РТС — {RTS} ({RTS%}). Рынок продолжает болтаться в коридоре 2090–2190, из которого не может выйти уже вторую неделю.
-
-🚀 Кто рос
-
-Лента $LENT +3,1% — отчёт лучше ожиданий
-Эн+ $ENPG +2,6% — на слабом рубле выигрывает как экспортёр
-НОВАТЭК $NVTK +2,2%
-Татнефть $TATN +1,8% — рынок отыгрывает дивиденды
-
-💰 Дивидендная история
-
-Татнефть объявила 32,88 ₽ на акцию за первое полугодие — и на обычку, и на преф. Отсечка 13 октября, собрание 23 сентября. $TATN $TATNP
-
-📉 Что давит
-
-Крепкий рубль — {USD} за доллар. Для экспортёров это минус к выручке, и пока курс не развернётся, индексу тяжело идти выше.
-
-💭 Пробьём 2190 или снова вниз к 2090? 👇`}
-];
-
-/* ================= ОТРИСОВКА ================= */
-let active='all';
-const toastEl=document.getElementById('toast');
-
-function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
-function hi(s){return esc(s).replace(/\$[A-Z0-9]+/g,m=>`<span class="t">${m}</span>`)}
-
-function toast(msg){
-  toastEl.textContent=msg;
-  toastEl.classList.add('on');
-  setTimeout(()=>toastEl.classList.remove('on'),1600);
+  }catch(e){
+    status.textContent = '';
+    errBox.textContent = 'Ошибка: ' + e.message;
+    errBox.style.display = 'block';
+  }finally{
+    btn.disabled = false;
+  }
 }
 
-function renderChips(){
-  const keys=['all',...Object.keys(CATS)];
-  document.getElementById('chips').innerHTML=keys.map(k=>
-    `<button class="chip${k===active?' on':''}" data-c="${k}">${k==='all'?'Все':CATS[k]}</button>`).join('');
-  document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{
-    active=b.dataset.c; renderChips(); renderFeed();
+document.getElementById('bMorning').onclick = () => run({
+  btn:    document.getElementById('bMorning'),
+  status: document.getElementById('sMorning'),
+  errBox: document.getElementById('eMorning'),
+  row:    document.getElementById('rowMorning'),
+  payload:{},
+  wait:'Читаю ленты и котировки. Первый запуск за день — до минуты.'
+});
+
+document.getElementById('bAsset').onclick = () => {
+  const manual = document.getElementById('manual').value.trim().toUpperCase();
+  const ticker = manual || document.getElementById('pick').value;
+  run({
+    btn:    document.getElementById('bAsset'),
+    status: document.getElementById('sAsset'),
+    errBox: document.getElementById('eAsset'),
+    row:    document.getElementById('rowAsset'),
+    payload:{ mode:'asset', ticker },
+    wait:'Собираю данные по ' + ticker + '…'
   });
-}
+};
 
-function renderFeed(){
-  const list=POSTS.filter(p=>active==='all'||p.cat===active);
-  document.getElementById('feed').innerHTML=list.map((p,i)=>`
-    <article class="post">
-      <div class="meta">
-        <span>${p.time}</span>
-        <span>${CATS[p.cat]}</span>
-        <span class="badge ${p.dir}">${fill(p.badge)}</span>
-      </div>
-      <h2>${esc(p.title)}</h2>
-      <div class="art" id="art${i}">${ARTCACHE[i]?'<img src="data:image/png;base64,'+ARTCACHE[i]+'" alt="">':''}</div>
-      <div class="text">${hi(fill(p.text))}</div>
-      <div class="row">
-        <button class="btn" id="cb${i}">Скопировать текст</button>
-        <button class="btn ghost" id="ab${i}">${ARTCACHE[i]?'Перерисовать':'Сгенерировать картинку'}</button>
-      </div>
-      <div class="err" id="er${i}"></div>
-    </article>`).join('');
-
-  list.forEach((p,i)=>{
-    document.getElementById('cb'+i).onclick=async()=>{
-      try{ await navigator.clipboard.writeText(fill(p.text)); toast('Скопировано'); }
-      catch(e){ toast('Не удалось'); }
-    };
-    document.getElementById('ab'+i).onclick=()=>makeArt(p,i);
-  });
-}
-
-const M=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-const d0=new Date();
-document.getElementById('date').textContent=d0.getDate()+' '+M[d0.getMonth()]+' '+d0.getFullYear();
-
-renderChips(); tape(); renderFeed();
-load().then(()=>{ tape(); renderFeed(); });
-setInterval(()=>load().then(()=>{ tape(); renderFeed(); }), 5*60*1000);
+document.getElementById('manual').addEventListener('keydown', e => {
+  if(e.key === 'Enter') document.getElementById('bAsset').click();
+});
 </script>
 </body>
 </html>
