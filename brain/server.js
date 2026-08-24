@@ -13,7 +13,7 @@ const RSS = [
 const TOPICS = {
   oil:   ['нефт','brent','urals','газ','опек','opec','ормуз','баррел'],
   gold:  ['золот','серебр','драгметалл','унци','бессент','трежерис'],
-  index: ['индекс','мосбирж','ммвб','ртс','акци','дивиденд','рубл','цб рф','ключевая ставка']
+  index: ['индекс','мосбирж','ммвб','ртс','акци','дивиденд','рубл','цб рф','ключевая ставка','дискретн','аукцион','торги приостановлен']
 };
 
 function strip(s){
@@ -39,9 +39,9 @@ async function feed(url){
   }catch(e){ return []; }
 }
 
-async function news(topic){
+async function news(topic, extra){
   const all = (await Promise.all(RSS.map(feed))).flat();
-  const keys = TOPICS[topic] || [];
+  const keys = (TOPICS[topic] || []).concat(extra || []);
   const hit = all.filter(n=>{
     const s = (n.title+' '+n.desc).toLowerCase();
     return keys.some(k=>s.includes(k));
@@ -74,17 +74,26 @@ async function quote(t){
       const r=await fetch(ISS+p+'?iss.meta=off&iss.only=marketdata,securities');
       if(!r.ok) continue;
       const j=await r.json();
-      const v=pick(j.marketdata,['LAST','CURRENTVALUE','LASTVALUE','LCURRENTPRICE','MARKETPRICE'])
-           ?? pick(j.securities,['PREVPRICE','PREVSETTLEPRICE','PREVLEGALCLOSEPRICE']);
-      const c=pick(j.marketdata,['LASTCHANGEPRCNT','LASTTOPREVPRICE','CHANGE']);
-      const n=pick(j.securities,['SHORTNAME','SECNAME','NAME']);
-      if(v!=null) return { t, name:n||t, v:+v, c:c==null?null:+c };
+
+      const live = pick(j.marketdata,['LAST','CURRENTVALUE','LASTVALUE','LCURRENTPRICE'])
+                ?? pick(j.marketdata,['MARKETPRICETODAY','WAPRICE']);
+      const prev = pick(j.securities,['PREVPRICE','PREVSETTLEPRICE','PREVLEGALCLOSEPRICE']);
+      const c    = pick(j.marketdata,['LASTCHANGEPRCNT','LASTTOPREVPRICE']);
+      const n    = pick(j.securities,['SHORTNAME','SECNAME','NAME']);
+      const st   = pick(j.marketdata,['TRADINGSTATUS']);
+
+      if(live!=null) return { t, name:n||t, v:+live, c:c==null?null:+c, stale:false, st };
+      if(prev!=null) return { t, name:n||t, v:+prev, c:null, stale:true, st };
     }catch(e){}
   }
-  return { t, name:t, v:null, c:null };
+  return { t, name:t, v:null, c:null, stale:true, st:null };
 }
 
-const fmt = q => `${q.t} (${q.name}): ${q.v==null?'нет данных':q.v}${q.c==null?'':', изменение '+q.c+'%'}`;
+const fmt = q => {
+  if(q.v==null) return `${q.t}: данных нет, в тексте не упоминать`;
+  if(q.stale)   return `${q.t} (${q.name}): ВНИМАНИЕ, свежей цены нет — торги, вероятно, приостановлены или идёт дискретный аукцион. Последняя известная цена ${q.v} — это ЗАКРЫТИЕ ПРЕДЫДУЩЕГО ДНЯ, НЕ текущая цена. Так и написать в посте.`;
+  return `${q.t} (${q.name}): ${q.v}${q.c==null?'':', изменение '+q.c+'%'}`;
+};
 
 /* ---------- ГЕНЕРАЦИЯ ---------- */
 const RULES = `Ты пишешь посты для соцсети Пульс от лица частного инвестора.
@@ -92,11 +101,20 @@ const RULES = `Ты пишешь посты для соцсети Пульс о�
 — Тикеры пишутся со знаком доллара без скобок: $TATN, $BRU6, $PLZL.
 — Много эмодзи, текст разбит на блоки с эмодзи-подзаголовками.
 — Первая строка — заголовок капсом с эмодзи.
-— Обязательные блоки: факт с цифрами, почему это происходит, что это значит для российского инвестора с тикерами.
 — Последняя строка — вопрос к читателям и эмодзи 👇.
-— Только факты из переданных данных. Ничего не выдумывать. Если данных мало — писать короче.
 — Объём 900–1600 знаков.
-Ещё ты придумываешь сцену для картинки к посту: один абзац на английском, описывающий символическую сцену с главным персонажем в центре и множеством мелких деталей на фоне. Без текста и букв в кадре.`;
+
+КРИТИЧЕСКИ ВАЖНО про цифры:
+— Использовать ТОЛЬКО переданные котировки. Ничего не досчитывать и не выдумывать.
+— Если про инструмент сказано, что свежей цены нет, — прямо написать, что торги приостановлены или идёт дискретный аукцион, и указать, что названная цена это закрытие прошлого дня. НИКОГДА не выдавать вчерашнюю цену за сегодняшнюю и не писать "без изменений".
+— Если данных по инструменту нет вообще — не упоминать его.
+
+КРИТИЧЕСКИ ВАЖНО про подзаголовки:
+— Подзаголовки блоков придумывать заново под конкретную новость, живым языком.
+— ЗАПРЕЩЕНЫ шаблонные подзаголовки вида "Факты с цифрами", "Что происходит", "Почему это происходит", "Что это значит для инвестора". Три поста одного выпуска не должны иметь ни одного совпадающего подзаголовка.
+— Структура блоков тоже разная: где-то начать с человеческой сцены, где-то с цифры, где-то с вопроса. Пост про нефть, пост про металлы и пост про индекс должны читаться как написанные в разном настроении.
+
+Ещё ты придумываешь сцену для картинки: один абзац на английском, символическая сцена с главным персонажем в центре и множеством деталей на фоне. Серьёзная газетная иллюстрация, взрослые реалистичные люди, без мультяшности. Без текста и букв в кадре.`;
 
 async function write(task, quotes, feedText){
   const r = await fetch('https://api.openai.com/v1/chat/completions',{
@@ -104,7 +122,7 @@ async function write(task, quotes, feedText){
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
     body:JSON.stringify({
       model: MODEL,
-      temperature: 0.7,
+      temperature: 0.85,
       response_format: { type:'json_object' },
       messages:[
         { role:'system', content: RULES },
@@ -143,10 +161,10 @@ const server = http.createServer((req,res)=>{
       const { mode, ticker } = JSON.parse(body||'{}');
 
       if(mode === 'asset'){
-        const t = String(ticker||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+        const t = String(ticker||'').toUpperCase().replace(/[^A-Z0-9_]/g,'');
         if(!t) throw new Error('не указан тикер');
         const q = await quote(t);
-        const f = await news('index');
+        const f = await news('index', [String(q.name||'').toLowerCase(), t.toLowerCase()]);
         const p = await write(`Пост про актив ${t}. Что с ним происходит прямо сейчас и почему.`, fmt(q), f);
         res.writeHead(200,{'Content-Type':'application/json'});
         res.end(JSON.stringify({ posts:[{ ...p, cat:'stock' }] }));
